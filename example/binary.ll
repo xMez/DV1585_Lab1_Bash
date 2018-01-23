@@ -4,8 +4,8 @@
 }
 %option noyywrap nounput batch noinput
 %%
-[0-9]		{ return yy::parser::make_BIT(yytext); }
-[A-F]		{ return yy::parser::make_HEX(yytext); }
+[01]		{ return yy::parser::make_BIT(yytext); }
+[ ]*		{ return yy::parser::make_SPACE(yytext); }
 \n		/* munch */
 <<EOF>>		return yy::parser::make_END();
 %%
