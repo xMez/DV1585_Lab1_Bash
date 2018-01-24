@@ -4,7 +4,7 @@
 }
 %option noyywrap nounput batch noinput
 %%
-^\n*		{ std::cout << "Line:" += yytext += "\n"; }
-\n*		{ std::cout << "NL:" += yytext; }
+[^\n]*		{ return yy::parser::make_LINE(yytext); }
+[\n]*		{ return yy::parser::make_NL(yytext); }
 <<EOF>>		return yy::parser::make_END();
 %%
