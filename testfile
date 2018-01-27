@@ -1,4 +1,3 @@
-normal|split;here
-not\;here\|though
-split\ me\ not
-finishing\;;then\\;
+prefix$var $afterspace;$x;prefix$y
+prefix$var $afterspace|$x|prefix$y
+prefix\ $var

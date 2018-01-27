@@ -9,6 +9,7 @@
   YY_DECL;
 }
 %token <std::string> LINE
+%token <std::string> VAR
 %token <std::string> SEMI
 %token <std::string> PIPE
 %token <std::string> BLANK
@@ -23,8 +24,9 @@ text_list : text
 
 text :
      | LINE		{ std::cout << "Text ->" << $1 << "<-" << std::endl; }
-     | SEMI		{ std::cout << "Semi" << std::endl;  }
-     | PIPE		{ std::cout << "Pipe" << std::endl;  }
+     | VAR		{ std::cout << "Var ->" << $1 << "<-" << std::endl; }
+     | SEMI		{ std::cout << "Semi" << std::endl; }
+     | PIPE		{ std::cout << "Pipe" << std::endl; }
      | BLANK		{ std::cout << "Blank " << $1.length() << " chars" << std::endl; }
      | NL	     	{ std::cout << "NL" << std::endl; }
      ;
