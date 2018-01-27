@@ -9,6 +9,9 @@
   YY_DECL;
 }
 %token <std::string> LINE
+%token <std::string> SEMI
+%token <std::string> PIPE
+%token <std::string> BLANK
 %token <std::string> NL
 %type <std::string> text
 %type <std::string> text_list
@@ -16,8 +19,12 @@
 %%
 text_list : text
 	  | text_list text
+          ;
 
 text :
-     | LINE		{ total = $1[0]; std::cout << "FOUND LINE" << std::endl; }
-     | NL	     	{ total = $1[0]; std::cout << "FOUND NEW LINE" << std::endl; }
+     | LINE		{ std::cout << "Text ->" << $1 << "<-" << std::endl; }
+     | SEMI		{ std::cout << "Semi" << std::endl;  }
+     | PIPE		{ std::cout << "Pipe" << std::endl;  }
+     | BLANK		{ std::cout << "Blank " << $1.length() << " chars" << std::endl; }
+     | NL	     	{ std::cout << "NL" << std::endl; }
      ;

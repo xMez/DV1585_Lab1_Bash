@@ -1,3 +1,2 @@
-testtest test data
-second line in the data
-another line without a trailing newline
+words-together  $split$apart; x |y; terminal
+not real bash!?

@@ -11,7 +11,7 @@ int main(int argc, char **argv)
 {
 	yy::parser parser;
 	if(!parser.parse())
-		std::cout << "It's a bingo! " << total << std::endl;
+		std::cout << "Done parsing!" << std::endl;
 	return 0;
 }
 
