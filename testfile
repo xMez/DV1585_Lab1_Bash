@@ -1,3 +1,2 @@
-prefix$var $afterspace;$x;prefix$y
-prefix$var $afterspace|$x|prefix$y
-prefix\ $var
+prefix$var'$notavar' 'all one string'
+';' \; ; '|'\||
