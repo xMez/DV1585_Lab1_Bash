@@ -1,5 +1,7 @@
+#include "node.hh"
 #include<iostream>
 #include "binary.tab.hh"
+extern Node root;
 extern unsigned int total;
 
 void yy::parser::error(std::string const&err)
@@ -11,7 +13,7 @@ int main(int argc, char **argv)
 {
 	yy::parser parser;
 	if(!parser.parse())
-		std::cout << "Done parsing!" << std::endl;
+		root.dump();
 	return 0;
 }
 
