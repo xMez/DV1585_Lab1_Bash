@@ -48,15 +48,10 @@ optline
 
 line
 	: units			{ $$ = $1; }
-	| line SEMI units	{ $$ = Node("line", "");
+	| line SEMI pipeline	{ $$ = Node("line", "");
 				  $$.children.push_back($1);
 				  $$.children.push_back($3);
 				}
-	| line PIPE pipeline	{ $$ = Node("line", "");
-				  $$.children.push_back($1);
-				  $$.children.push_back($3);
-				}
-	;
 
 units
 	: unit			{ $$ = Node("units", "");
@@ -68,10 +63,10 @@ units
 	;
 
 pipeline
-	: unit			{ $$ = Node("pipeline", "");
+	: units			{ $$ = Node("pipeline", "");
 				  $$.children.push_back($1);
 				}
-	| pipeline unit		{ $$ = $1;
+	| pipeline PIPE units	{ $$ = $1;
 				  $$.children.push_back($1);
 				}
 
