@@ -63,11 +63,10 @@ units
 	;
 
 pipeline
-	: units			{ $$ = Node("pipeline", "");
+	: units			{ $$ = $1; }
+	| pipeline PIPE units	{ $$ = Node("pipeline", "");
 				  $$.children.push_back($1);
-				}
-	| pipeline PIPE units	{ $$ = $1;
-				  $$.children.push_back($1);
+				  $$.children.push_back($3);
 				}
 
 unit
