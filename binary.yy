@@ -54,7 +54,7 @@ line
 				  $$.children.push_back($1);
 				  $$.children.push_back($3);
 				}
-
+	;
 
 pipeline
 	: command		{ $$ = $1; }
@@ -65,26 +65,26 @@ pipeline
 	;
 
 command
-	: concatenate		{ $$ = $1; }
-	| command BLANK concatenate
-				{ $$ = Node("command", "");
+	: concatenate 		{ $$ = Node("command", "");
 				  $$.children.push_back($1);
+				}
+	| command BLANK concatenate 
+				{ $$ = $1; 
 				  $$.children.push_back($3);
 				}
 	;
 
 concatenate
-	: units			{ $$ = $1; } 
-	| concatenate units	{ $$ = Node("concatenate", "");
-				  $$.children.push_back($1);
-				  $$.children.push_back($2);
-				}
+	: unit			{ $$ = $1; }
+	| units			{ $$ = $1; }
 	;
 
 units
-	: unit			{ $$ = $1; }
-	| units unit		{ $$ = $1;
+	: unit unit		{ $$ = Node("concatenate", "");
 				  $$.children.push_back($1);
+				  $$.children.push_back($2);
+				}
+	| units unit 		{ $$ = $1; 
 				  $$.children.push_back($2);
 				}
 	;
