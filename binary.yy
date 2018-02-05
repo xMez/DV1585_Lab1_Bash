@@ -18,6 +18,7 @@
 %token <std::string> SEMI
 %token <std::string> PIPE
 %token <std::string> BLANK
+%token <std::string> EQUAL
 %token <std::string> NL
 %type <Node> stream
 %type <Node> optline
@@ -25,6 +26,7 @@
 %type <Node> pipeline
 %type <Node> command
 %type <Node> concatenate
+%type <Node> equals
 %type <Node> units
 %type <Node> unit
 %token END 0 "end of file"
@@ -57,10 +59,20 @@ line
 	;
 
 pipeline
-	: command		{ $$ = $1; }
-	| pipeline PIPE command	{ $$ = Node("pipeline", "");
+	: equals		{ $$ = $1; }
+	| pipeline PIPE equals	{ $$ = Node("pipeline", "");
 				  $$.children.push_back($1);
 				  $$.children.push_back($3);
+				}
+	;
+
+equals
+	: command		{ $$ = $1; }
+	| WORD EQUAL concatenate BLANK equals
+				{ $$ = Node("equals", ""); 
+				  $$.children.push_back(Node("WORD", $1));
+				  $$.children.push_back($3);
+				  $$.children.push_back($5);
 				}
 	;
 
@@ -72,6 +84,8 @@ command
 				{ $$ = $1; 
 				  $$.children.push_back($3);
 				}
+	| '<' '(' stream ')' BLANK	
+				{ $$ = $3; }
 	;
 
 concatenate
@@ -93,4 +107,5 @@ unit
 	: WORD			{ $$ = Node("WORD", $1); }
 	| VAR			{ $$ = Node("VAREXP", $1); }
 	| QUOTE			{ $$ = Node("QUOTED", $1); }
+	| EQUAL			{ $$ = Node("EQUAL", $1); }
 	;
