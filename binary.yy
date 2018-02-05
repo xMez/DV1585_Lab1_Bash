@@ -22,8 +22,9 @@
 %type <Node> stream
 %type <Node> optline
 %type <Node> line
-%type <Node> units
-%type <Node> pipeline 
+%type <Node> pipeline
+%type <Node> command
+%type <Node> concatenate
 %type <Node> unit
 %token END 0 "end of file"
 %%
@@ -47,31 +48,40 @@ optline
 	;
 
 line
-	: units			{ $$ = $1; }
+	: pipeline		{ $$ = $1; }
 	| line SEMI pipeline	{ $$ = Node("line", "");
 				  $$.children.push_back($1);
 				  $$.children.push_back($3);
 				}
 
-units
-	: unit			{ $$ = Node("units", "");
+
+pipeline
+	: command		{ $$ = $1; }
+	| pipeline PIPE command	{ $$ = Node("pipeline", "");
 				  $$.children.push_back($1);
-				} 
-	| units unit		{ $$ = $1;
+				  $$.children.push_back($3);
+				}
+	;
+
+command
+	: concatenate		{ $$ = $1; }
+	| command BLANK concatenate
+				{ $$ = Node("command", "");
+				  $$.children.push_back($1);
+				  $$.children.push_back($3);
+				}
+	;
+
+concatenate
+	: unit			{ $$ = $1; } 
+	| concatenate unit	{ $$ = Node("concatenate", "");
+				  $$.children.push_back($1);
 				  $$.children.push_back($2);
 				}
 	;
 
-pipeline
-	: units			{ $$ = $1; }
-	| pipeline PIPE units	{ $$ = Node("pipeline", "");
-				  $$.children.push_back($1);
-				  $$.children.push_back($3);
-				}
-
 unit
 	: WORD			{ $$ = Node("WORD", $1); }
-	| VAR			{ $$ = Node("VAR", $1); }
-	| QUOTE			{ $$ = Node("QUOTE", $1); }
-	| BLANK			{ $$ = Node("BLANK", $1); }
+	| VAR			{ $$ = Node("VAREXP", $1); }
+	| QUOTE			{ $$ = Node("QUOTED", $1); }
 	;
