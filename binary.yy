@@ -25,6 +25,7 @@
 %type <Node> pipeline
 %type <Node> command
 %type <Node> concatenate
+%type <Node> units
 %type <Node> unit
 %token END 0 "end of file"
 %%
@@ -73,8 +74,16 @@ command
 	;
 
 concatenate
-	: unit			{ $$ = $1; } 
-	| concatenate unit	{ $$ = Node("concatenate", "");
+	: units			{ $$ = $1; } 
+	| concatenate units	{ $$ = Node("concatenate", "");
+				  $$.children.push_back($1);
+				  $$.children.push_back($2);
+				}
+	;
+
+units
+	: unit			{ $$ = $1; }
+	| units unit		{ $$ = $1;
 				  $$.children.push_back($1);
 				  $$.children.push_back($2);
 				}
