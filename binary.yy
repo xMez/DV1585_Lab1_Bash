@@ -19,11 +19,14 @@
 %token <std::string> PIPE
 %token <std::string> BLANK
 %token <std::string> EQUAL
+%token <std::string> SUBSTART
+%token <std::string> SUBEND
 %token <std::string> NL
 %type <Node> stream
 %type <Node> optline
 %type <Node> line
 %type <Node> pipeline
+%type <Node> optspace
 %type <Node> command
 %type <Node> concatenate
 %type <Node> equals
@@ -60,10 +63,16 @@ line
 
 pipeline
 	: equals		{ $$ = $1; }
-	| pipeline PIPE equals	{ $$ = Node("pipeline", "");
+	| pipeline PIPE equals
+				{ $$ = Node("pipeline", "");
 				  $$.children.push_back($1);
 				  $$.children.push_back($3);
 				}
+	;
+
+optspace
+	: /*empty*/	
+	| BLANK
 	;
 
 equals
@@ -80,12 +89,10 @@ command
 	: concatenate 		{ $$ = Node("command", "");
 				  $$.children.push_back($1);
 				}
-	| command BLANK concatenate 
+	| optspace command BLANK concatenate optspace
 				{ $$ = $1; 
 				  $$.children.push_back($3);
 				}
-	| '<' '(' stream ')' BLANK	
-				{ $$ = $3; }
 	;
 
 concatenate
@@ -108,4 +115,8 @@ unit
 	| VAR			{ $$ = Node("VAREXP", $1); }
 	| QUOTE			{ $$ = Node("QUOTED", $1); }
 	| EQUAL			{ $$ = Node("EQUAL", $1); }
+	| SUBSTART stream SUBEND
+				{ $$ = Node("SUBSHELL", ""); 
+				  $$.children.push_back($2);
+				}
 	;
