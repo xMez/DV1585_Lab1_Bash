@@ -9,6 +9,7 @@
 ('[^\n']+')				{ return yy::parser::make_QUOTE(yytext); }
 [;]					{ return yy::parser::make_SEMI(yytext); }
 [|]					{ return yy::parser::make_PIPE(yytext); }
+
 [\t ]+					{ return yy::parser::make_BLANK(yytext); }
 [=]					{ return yy::parser::make_EQUAL(yytext); }
 [<][(]					{ return yy::parser::make_SUBSTART(yytext); }

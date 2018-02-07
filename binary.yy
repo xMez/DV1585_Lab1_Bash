@@ -71,7 +71,7 @@ pipeline
 	;
 
 optspace
-	: /*empty*/	
+	: /*empty*/ 	
 	| BLANK
 	;
 
@@ -86,10 +86,11 @@ equals
 	;
 
 command
-	: concatenate 		{ $$ = Node("command", "");
+	: concatenate
+				{ $$ = Node("command", "");
 				  $$.children.push_back($1);
 				}
-	| optspace command BLANK concatenate optspace
+	| command BLANK concatenate
 				{ $$ = $1; 
 				  $$.children.push_back($3);
 				}
