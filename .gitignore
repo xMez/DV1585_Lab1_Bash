@@ -5,3 +5,5 @@ parser
 *.yy.c
 *.swo
 *.swp
+*.png
+*.dot
