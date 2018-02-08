@@ -27,6 +27,7 @@
 %type <Node> line
 %type <Node> pipeline
 %type <Node> optspace
+%type <Node> optspaceex
 %type <Node> command
 %type <Node> concatenate
 %type <Node> equals
@@ -62,8 +63,8 @@ line
 	;
 
 pipeline
-	: equals		{ $$ = $1; }
-	| pipeline PIPE equals
+	: optspaceex		{ $$ = $1; }
+	| pipeline PIPE optspaceex
 				{ $$ = Node("pipeline", "");
 				  $$.children.push_back($1);
 				  $$.children.push_back($3);
@@ -74,6 +75,11 @@ optspace
 	: /*empty*/ 	
 	| BLANK
 	;
+
+optspaceex
+	: optspace equals optspace	{ $$ = $2; }
+	;
+
 
 equals
 	: command		{ $$ = $1; }
