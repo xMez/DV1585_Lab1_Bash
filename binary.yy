@@ -10,7 +10,7 @@
   #include <string>
   #define YY_DECL yy::parser::symbol_type yylex()
   YY_DECL;
-  Node root;
+  Root root;
 }
 %token <std::string> WORD
 %token <std::string> VAR
@@ -37,7 +37,7 @@
 %%
 
 stream
-	: optline		{ $$ = Node("stream", "");
+	: optline		{ $$ = Stream("stream", "");
 				  $$.children.push_back($1);
 				  root = $$;
 				}
@@ -48,15 +48,15 @@ stream
 	;
 
 optline
-	: /*empty*/		{ $$ = Node("optline", "empty"); }
-	| line			{ $$ = Node("optline", "has line");
+	: /*empty*/		{ $$ = Optline("optline", "empty"); }
+	| line			{ $$ = Optline("optline", "has line");
 				  $$.children.push_back($1);
 				}
 	;
 
 line
 	: pipeline		{ $$ = $1; }
-	| line SEMI pipeline	{ $$ = Node("line", "");
+	| line SEMI pipeline	{ $$ = Line("line", "");
 				  $$.children.push_back($1);
 				  $$.children.push_back($3);
 				}
@@ -65,7 +65,7 @@ line
 pipeline
 	: optspaceex		{ $$ = $1; }
 	| pipeline PIPE optspaceex
-				{ $$ = Node("pipeline", "");
+				{ $$ = Pipe("pipeline", "");
 				  $$.children.push_back($1);
 				  $$.children.push_back($3);
 				}
@@ -77,15 +77,15 @@ optspace
 	;
 
 optspaceex
-	: optspace equals optspace	{ $$ = $2; }
+	: optspace equals optspace
+				{ $$ = $2; }
 	;
-
 
 equals
 	: command		{ $$ = $1; }
 	| WORD EQUAL concatenate BLANK equals
-				{ $$ = Node("equals", ""); 
-				  $$.children.push_back(Node("WORD", $1));
+				{ $$ = Equals("equals", ""); 
+				  $$.children.push_back(WordChar("WORD", $1));
 				  $$.children.push_back($3);
 				  $$.children.push_back($5);
 				}
@@ -93,7 +93,7 @@ equals
 
 command
 	: concatenate
-				{ $$ = Node("command", "");
+				{ $$ = Command("command", "");
 				  $$.children.push_back($1);
 				}
 	| command BLANK concatenate
@@ -108,7 +108,7 @@ concatenate
 	;
 
 units
-	: unit unit		{ $$ = Node("concatenate", "");
+	: unit unit		{ $$ = Concat("concatenate", "");
 				  $$.children.push_back($1);
 				  $$.children.push_back($2);
 				}
@@ -118,12 +118,12 @@ units
 	;
 
 unit
-	: WORD			{ $$ = Node("WORD", $1); }
-	| VAR			{ $$ = Node("VAREXP", $1); }
-	| QUOTE			{ $$ = Node("QUOTED", $1); }
-	| EQUAL			{ $$ = Node("EQUAL", $1); }
+	: WORD			{ $$ = WordChar("WORD", $1); }
+	| VAR			{ $$ = VarChar("VAREXP", $1); }
+	| QUOTE			{ $$ = QuotedChar("QUOTED", $1); }
+	| EQUAL			{ $$ = EqualChar("EQUAL", $1); }
 	| SUBSTART stream SUBEND
-				{ $$ = Node("SUBSHELL", ""); 
+				{ $$ = Subshell("SUBSHELL", ""); 
 				  $$.children.push_back($2);
 				}
 	;
